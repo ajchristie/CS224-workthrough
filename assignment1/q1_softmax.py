@@ -29,14 +29,20 @@ def softmax(x):
     orig_shape = x.shape
 
     if len(x.shape) > 1:
-        # Matrix
+        # Matrix (softmax applied rowwise)
         ### YOUR CODE HERE
-        raise NotImplementedError
+        # Find maximum component in each column for exponent shift
+        cs = np.max(x, axis=1)
+        x = np.exp(x - cs[:, np.newaxis]) #N.b. newaxis for broadcasting
+        x = x/np.sum(x, keepdims=True, axis=1)
         ### END YOUR CODE
     else:
         # Vector
         ### YOUR CODE HERE
-        raise NotImplementedError
+        # Find maximum component for exponent shift
+        c = np.max(x, axis=0)
+        x = np.exp(x - c) # N.b. we're broadcasting here
+        x = x/np.sum(x, axis=0)
         ### END YOUR CODE
 
     assert x.shape == orig_shape
@@ -78,7 +84,7 @@ def test_softmax():
     """
     print "Running your tests..."
     ### YOUR CODE HERE
-    raise NotImplementedError
+    print "Ain't got no tests right now."
     ### END YOUR CODE
 
 
