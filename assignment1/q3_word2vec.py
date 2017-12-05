@@ -59,15 +59,12 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     """
 
     ### YOUR CODE HERE
-    grad = np.zeros(outputVectors.shape)   # faster than zeros_like, apparently
-    gradPred = np.zeros(predicted.shape)   # throws error l8r if shape is wrong
-    prob = softmax(np.dot(predicted, outputVectors.T))   # 1 x N
+    #grad = np.zeros(outputVectors.shape)   # faster than zeros_like, apparently
+    #gradPred = np.zeros(predicted.shape)   # throws error l8r if shape is wrong
+    prob = softmax(np.dot(predicted, outputVectors.T))   # 1 x N (y_hat)
     cost = -np.log(prob[target])
     grad1 = prob
-    prob[target] -= 1   # grabs y_hat - y to start gradients
-    # N, D = outputVectors.shape # need these for fake transpose
-    # grad = np.dot(grad1.reshape(N,1), predicted.reshape(1,D))
-    # gradPred = np.dot(grad1.reshape(1,N), outputVectors).flatten() # kill axis
+    grad1[target] -= 1   # grabs y_hat - y to start gradients
     grad = grad1[:, np.newaxis] * predicted[np.newaxis, :]
     gradPred = grad1.dot(outputVectors)
     ### END YOUR CODE
@@ -109,8 +106,10 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     ### YOUR CODE HERE
     prob = np.dot(predicted, outputVectors.T)
     cost = -np.log(sigmoid(prob[target])) - np.sum(np.log(sigmoid(-prob[indices[1:]])))
+
     off_sig = (1 - sigmoid(-prob[indices[1:]]))  # N.b - row!!!!
     gradPred = (sigmoid(prob[target]) - 1) * outputVectors[target] + np.sum(off_sig[:, np.newaxis] * outputVectors[indices[1:]], axis=0)
+
     grad = np.zeros(outputVectors.shape)
     grad[target] = (sigmoid(prob[target]) - 1) * predicted
     for k in indices[1:]:
