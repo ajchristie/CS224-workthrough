@@ -108,7 +108,6 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
 
     ### YOUR CODE HERE
     prob = np.dot(predicted, outputVectors.T)
-    #prob = outputVectors.dot(predicted)
     cost = -np.log(sigmoid(prob[target])) - np.sum(np.log(sigmoid(-prob[indices[1:]])))
     off_sig = (1 - sigmoid(-prob[indices[1:]]))  # N.b - row!!!!
     gradPred = (sigmoid(prob[target]) - 1) * outputVectors[target] + np.sum(off_sig[:, np.newaxis] * outputVectors[indices[1:]], axis=0)
