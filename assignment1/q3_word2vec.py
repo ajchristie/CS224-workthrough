@@ -180,7 +180,16 @@ def cbow(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradOut = np.zeros(outputVectors.shape)
 
     ### YOUR CODE HERE
-    # raise NotImplementedError
+    ## Just some notes here: remember the inference basically goes in the opposite direction from SkipGram: given a bag of context words, take a guess at the center word (currentWord in the arguments). Cost and gradient are softmax, but we need a single input vector, which we get just by adding up the context word vectors.
+
+    target = tokens[currentWord]  # grab the index of the center word
+    context = sum([inputVectors[tokens[w]] for w in contextWords])
+    cost, gradPred, gradOut = word2vecCostAndGradient(context, target, outputVectors, dataset)
+
+    gradIn = np.zeros(inputVectors.shape)
+    for w in contextWords:
+        gradIn[tokens[w]] += gradPred
+
     ### END YOUR CODE
 
     return cost, gradIn, gradOut
@@ -255,11 +264,11 @@ def test_word2vec():
     print skipgram("c", 1, ["a", "b"],
         dummy_tokens, dummy_vectors[:5,:], dummy_vectors[5:,:], dataset,
         negSamplingCostAndGradient)
-    #print cbow("a", 2, ["a", "b", "c", "a"],
-        #dummy_tokens, dummy_vectors[:5,:], dummy_vectors[5:,:], dataset)
-    #print cbow("a", 2, ["a", "b", "a", "c"],
-        #dummy_tokens, dummy_vectors[:5,:], dummy_vectors[5:,:], dataset,
-        #negSamplingCostAndGradient)
+    print cbow("a", 2, ["a", "b", "c", "a"],
+        dummy_tokens, dummy_vectors[:5,:], dummy_vectors[5:,:], dataset)
+    print cbow("a", 2, ["a", "b", "a", "c"],
+        dummy_tokens, dummy_vectors[:5,:], dummy_vectors[5:,:], dataset,
+        negSamplingCostAndGradient)
 
 
 if __name__ == "__main__":
