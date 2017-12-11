@@ -40,7 +40,7 @@ def forward_backward_prop(data, labels, params, dimensions):
     h = sigmoid(z1)          # Still M x H
     z2 = h.dot(W2) + b2      # Now M x Dy
     yhat = softmax(z2)       # Still M x Dy
-    cost = -(np.sum(labels * np.log(yhat))
+    cost = -np.sum(np.log(yhat) * labels)
     ### END YOUR CODE
 
     ### YOUR CODE HERE: backward propagation
@@ -48,7 +48,7 @@ def forward_backward_prop(data, labels, params, dimensions):
     gradW2 = h.T.dot(gradz2)           # H x Dy
     gradb2 = np.sum(gradz2, axis=0)    # 1 x Dy
     gradh = gradz2.dot(W2.T)           # M x H
-    gradz1 = gradh * sigmoid_grad(z1)  # M x H
+    gradz1 = gradh * sigmoid_grad(h)  # M x H
     gradW1 = data.T.dot(gradz1)        # Dx x H
     gradb1 = np.sum(gradz1, axis=0)    # 1 x Dx
     ### END YOUR CODE

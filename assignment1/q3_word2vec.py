@@ -3,6 +3,8 @@
 import numpy as np
 import random
 
+import time
+
 from q1_softmax import softmax
 from q2_gradcheck import gradcheck_naive
 from q2_sigmoid import sigmoid, sigmoid_grad
@@ -104,17 +106,16 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     indices.extend(getNegativeSamples(target, dataset, K))
 
     ### YOUR CODE HERE
-    prob = np.dot(predicted, outputVectors.T)
-    cost = -np.log(sigmoid(prob[target])) - np.sum(np.log(sigmoid(-prob[indices[1:]])))
+    U_neg = outputVectors[indices]
+    prob = np.dot(U_neg, predicted) # really doing predicted, U_neg.T here but avoiding T
+    cost = -np.log(sigmoid(prob[0])) - np.sum(np.log(sigmoid(-prob[1:])))
 
-    off_sig = (1 - sigmoid(-prob[indices[1:]]))  # N.b - row!!!!
-    gradPred = (sigmoid(prob[target]) - 1) * outputVectors[target] + np.sum(off_sig[:, np.newaxis] * outputVectors[indices[1:]], axis=0)
+    gradPred = ((sigmoid(prob[0]) - 1) * U_neg[0]) + np.sum((1- sigmoid(-prob[1:]))[:, np.newaxis] * U_neg[1:], axis=0)
 
     grad = np.zeros(outputVectors.shape)
-    grad[target] = (sigmoid(prob[target]) - 1) * predicted
+    grad[target] = (sigmoid(prob[0]) - 1) * predicted
     for k in indices[1:]:
         grad[k] += (1.0 - sigmoid(-np.dot(outputVectors[k], predicted))) * predicted
-    ### END YOUR CODE
 
     return cost, gradPred, grad
 
@@ -243,12 +244,16 @@ def test_word2vec():
     dummy_vectors = normalizeRows(np.random.randn(10,3))
     dummy_tokens = dict([("a",0), ("b",1), ("c",2),("d",3),("e",4)])
     print "==== Gradient check for skip-gram ===="
+    start_time = time.clock()
     gradcheck_naive(lambda vec: word2vec_sgd_wrapper(
         skipgram, dummy_tokens, vec, dataset, 5, softmaxCostAndGradient),
         dummy_vectors)
+    print "--- %s seconds" % (time.clock() - start_time)
+    start_time = time.clock()
     gradcheck_naive(lambda vec: word2vec_sgd_wrapper(
         skipgram, dummy_tokens, vec, dataset, 5, negSamplingCostAndGradient),
         dummy_vectors)
+    print "--- %s seconds" % (time.clock() - start_time)
     print "\n==== Gradient check for CBOW      ===="
     gradcheck_naive(lambda vec: word2vec_sgd_wrapper(
         cbow, dummy_tokens, vec, dataset, 5, softmaxCostAndGradient),
