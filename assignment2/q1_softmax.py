@@ -24,9 +24,9 @@ def softmax(x):
     """
 
     ### YOUR CODE HERE
-    cs = tf.reduce_max(x, axis=1, keepdims=True)
+    cs = tf.reduce_max(x, axis=1, keep_dims=True)
     expd = tf.exp(x - cs)
-    out = expd / tf.reduce_sum(expd, axis=1, keepdims=True)
+    out = expd / tf.reduce_sum(expd, axis=1, keep_dims=True)
     ### END YOUR CODE
 
     return out
