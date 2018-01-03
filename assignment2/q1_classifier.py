@@ -93,10 +93,11 @@ class SoftmaxModel(Model):
             pred: A tensor of shape (batch_size, n_classes)
         """
         ### YOUR CODE HERE
-        # This is roundabout for W, but will make it easier to change later.
-        W = tf.Variable(tf.random_uniform((self.config.n_features, self.config.n_classes), 0, 0))
-        b = tf.Variable(tf.zeros(self.config.n_classes))
-        pred = softmax(tf.matmul(self.input_placeholder, W) + b)
+        with tf.variable_scope('softmax-classifier'):
+            # This is roundabout for W, but will make it easier to change later.
+            W = tf.Variable(tf.random_uniform((self.config.n_features, self.config.n_classes), 0, 0))
+            b = tf.Variable(tf.zeros(self.config.n_classes))
+            pred = softmax(tf.matmul(self.input_placeholder, W) + b)
         ### END YOUR CODE
         return pred
 

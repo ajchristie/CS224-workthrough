@@ -20,11 +20,13 @@ def xavier_weight_init():
         This function will be used as a variable initializer.
 
         Args:
-            shape: Tuple or 1-d array that species the dimensions of the requested tensor.
+            shape: Tuple or 1-d array that specifies the dimensions of the requested tensor.
         Returns:
             out: tf.Tensor of specified shape sampled from the Xavier distribution.
         """
         ### YOUR CODE HERE
+        epsilon = tf.sqrt(6.0 / sum(shape))
+        out = tf.random_uniform(shape, epsilon, -epsilon, **kwargs)
         ### END YOUR CODE
         return out
     # Returns defined initializer function.
