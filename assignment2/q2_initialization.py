@@ -26,7 +26,7 @@ def xavier_weight_init():
         """
         ### YOUR CODE HERE
         epsilon = tf.sqrt(6.0 / sum(shape))
-        out = tf.random_uniform(shape, epsilon, -epsilon, **kwargs)
+        out = tf.Variable(tf.random_uniform(shape, epsilon, -epsilon, **kwargs))
         ### END YOUR CODE
         return out
     # Returns defined initializer function.

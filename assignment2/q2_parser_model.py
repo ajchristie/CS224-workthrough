@@ -141,8 +141,8 @@ class ParserModel(Model):
         ### YOUR CODE HERE
         ## Initializations
         xavier_init = xavier_weight_init()
-        W = tf.Variable(xavier_init((self.config.n_features * self.config.embed_size, self.config.hidden_size)))
-        U = tf.Variable(xavier_init((self.config.hidden_size, self.config.n_classes)))
+        W = xavier_init((self.config.n_features * self.config.embed_size, self.config.hidden_size))
+        U = xavier_init((self.config.hidden_size, self.config.n_classes))
         b1 = tf.Variable(tf.zeros((self.config.hidden_size,)))
         b2 = tf.Variable(tf.zeros((self.config.n_classes,)))
 
